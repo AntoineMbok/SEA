@@ -1,34 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>LA TV Shows | Home</title>
-    <meta name="description" content="A Catalog of Shows Set in Los Angeles">
-    <link rel="stylesheet" href="style.css" />
-    <script type="text/javascript" src="scripts.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Recipe Catalog</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header class="main-header">
-        <h1 class="title">LA TV Shows</h1>
+    <header>
+        <h1>Pizza Recipe Catalog</h1>
     </header>
-    <div id="card-container"></div>
 
-    <!-- Template for TV show card -->
-    <template id="card-template">
-        <div class="card">
-            <div class="card-content">
-                <h2></h2>
-                <img src="" alt="">
-                <ul></ul>
-            </div>
+    <div class="container">
+        <input type="text" id="searchInput" placeholder="Search by name...">
+        <button onclick="search()">Search</button>
+        <select id="ingredientFilter">
+            <option value="">Filter by Ingredient</option>
+        </select>
+        <button onclick="filterByIngredient()">Apply Filter</button>
+        <button onclick="resetFilters()">Reset Filters</button>
+        <div id="pizzaList" class="pizza-list">
+            <!-- Pizza recipes will be dynamically inserted here -->
         </div>
-    </template>
-
-    <div class="footer">
-        <button onclick="quoteAlert();">Get A Quote!</button>
-        <button onclick="removeLastCard();">Remove A Card!</button>
     </div>
+
+    <footer>
+        <h3>Add Your Own Pizza Recipe:</h3>
+        <input type="text" id="nameInput" placeholder="Recipe Name">
+        <input type="text" id="ingredientsInput" placeholder="Ingredients (comma-separated)">
+        <input type="text" id="descriptionInput" placeholder="Description">
+        <input type="text" id="imageInput" placeholder="Image URL">
+        <button onclick="addPizza()">Add Recipe</button>
+    </footer>
+
+    <script src="scripts.js"></script>
 </body>
 
 </html>
