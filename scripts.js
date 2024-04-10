@@ -25,63 +25,110 @@
 
 // scripts.js
 
-// Array of TV shows with title and poster URL
-let tvShows = [
+// Initial pizza recipes data
+let pizzaRecipes = [
     {
-        title: "Fresh Prince of Bel Air",
-        posterURL: "https://upload.wikimedia.org/wikipedia/en/3/33/Fresh_Prince_S1_DVD.jpg",
-        bullets: ["Comedy", "Drama", "Sitcom"]
+        name: "Margherita",
+        ingredients: ["Tomato Sauce", "Mozzarella Cheese", "Fresh Basil", "Olive Oil"],
+        description: "A classic Italian pizza topped with tomato sauce, mozzarella cheese, and fresh basil leaves.",
+        image: "https://www.simplyrecipes.com/thmb/-vNjNlr4sLNLYF3PSJf4Ycav0H0=/400x300/filters:fill(auto,1)/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__09__easy-margherita-pizza-lead-4-600-e2d85d8e6a4c40318fc2dbcf4a99a654.jpg"
     },
     {
-        title: "Curb Your Enthusiasm",
-        posterURL: "https://m.media-amazon.com/images/M/MV5BZDY1ZGM4OGItMWMyNS00MDAyLWE2Y2MtZTFhMTU0MGI5ZDFlXkEyXkFqcGdeQXVyMDc5ODIzMw@@._V1_FMjpg_UX1000_.jpg",
-        bullets: ["Comedy", "Mockumentary", "Satire"]
+        name: "Pepperoni",
+        ingredients: ["Tomato Sauce", "Mozzarella Cheese", "Pepperoni Slices"],
+        description: "A classic pizza topped with tomato sauce, mozzarella cheese, and pepperoni slices.",
+        image: "https://www.simplyrecipes.com/thmb/ATM6XesfF_SQ7i0x7efW6bKYHg0=/400x300/filters:fill(auto,1)/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2018__02__PepperoniPizza-LEAD-3-2a5e8d61dd0246a397d764f91e8b161b.jpg"
     },
-    {
-        title: "East Los High",
-        posterURL: "https://static.wikia.nocookie.net/hulu/images/6/64/East_Los_High.jpg",
-        bullets: ["Drama", "Teen", "Romance"]
-    }
-    // Add more TV shows here
+    // Add more pizza recipes here
 ];
 
-function showCards() {
-    const cardContainer = document.getElementById("card-container");
-    const template = document.getElementById("card-template");
-
-    // Clear existing cards
-    cardContainer.innerHTML = "";
-
-    // Loop through TV shows and create a card for each
-    tvShows.forEach(show => {
-        const cardClone = template.content.cloneNode(true);
-        const card = cardClone.querySelector(".card");
-
-        card.querySelector("h2").textContent = show.title;
-        card.querySelector("img").src = show.posterURL;
-        card.querySelector("img").alt = show.title + " Poster";
-
-        const bulletsList = card.querySelector("ul");
-        show.bullets.forEach(bullet => {
-            const listItem = document.createElement("li");
-            listItem.textContent = bullet;
-            bulletsList.appendChild(listItem);
-        });
-
-        cardContainer.appendChild(card);
+// Function to display pizza recipes
+function displayPizzaRecipes() {
+    const pizzaList = document.getElementById("pizzaList");
+    pizzaList.innerHTML = "";
+    pizzaRecipes.forEach(pizza => {
+        const pizzaCard = document.createElement("div");
+        pizzaCard.classList.add("pizza-card");
+        pizzaCard.innerHTML = `
+            <img src="${pizza.image}" alt="${pizza.name}">
+            <h2>${pizza.name}</h2>
+            <p>${pizza.description}</p>
+            <p><strong>Ingredients:</strong> ${pizza.ingredients.join(", ")}</p>
+        `;
+        pizzaList.appendChild(pizzaCard);
     });
 }
 
-function quoteAlert() {
-    console.log("Button Clicked!")
-    alert("I guess I can kiss heaven goodbye, because it got to be a sin to look this good!");
+// Function to add a new pizza recipe
+function addPizza() {
+    const nameInput = document.getElementById("nameInput").value;
+    const ingredientsInput = document.getElementById("ingredientsInput").value.split(",").map(ingredient => ingredient.trim());
+    const descriptionInput = document.getElementById("descriptionInput").value;
+    const imageInput = document.getElementById("imageInput").value;
+
+    if (nameInput && ingredientsInput.length > 0 && descriptionInput && imageInput) {
+        const newPizza = {
+            name: nameInput,
+            ingredients: ingredientsInput,
+            description: descriptionInput,
+            image: imageInput
+        };
+        pizzaRecipes.push(newPizza);
+        displayPizzaRecipes();
+        // Clear input fields
+        document.getElementById("nameInput").value = "";
+        document.getElementById("ingredientsInput").value = "";
+        document.getElementById("descriptionInput").value = "";
+        document.getElementById("imageInput").value = "";
+    } else {
+        alert("Please fill in all fields.");
+    }
 }
 
-function removeLastCard() {
-    tvShows.pop(); // Remove last TV show
-    showCards(); // Re-render cards
+// Function to search for pizza recipes by name
+function search() {
+    const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+    const filteredRecipes = pizzaRecipes.filter(pizza => pizza.name.toLowerCase().includes(searchTerm));
+    displayPizzaRecipes(filteredRecipes);
 }
 
-// Call showCards() when the page is loaded
-document.addEventListener("DOMContentLoaded", showCards);
+// Function to filter pizza recipes by ingredient
+function filterByIngredient() {
+    const selectedIngredient = document.getElementById("ingredientFilter").value;
+    if (selectedIngredient) {
+        const filteredRecipes = pizzaRecipes.filter(pizza => pizza.ingredients.includes(selectedIngredient));
+        displayPizzaRecipes(filteredRecipes);
+    }
+}
 
+// Function to reset filters and display all pizza recipes
+function resetFilters() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("ingredientFilter").selectedIndex = 0;
+    displayPizzaRecipes();
+}
+
+// Function to populate the ingredient filter dropdown
+function populateIngredientFilter() {
+    const ingredientFilter = document.getElementById("ingredientFilter");
+    const ingredients = pizzaRecipes.reduce((acc, pizza) => {
+        pizza.ingredients.forEach(ingredient => {
+            if (!acc.includes(ingredient)) {
+                acc.push(ingredient);
+            }
+        });
+        return acc;
+    }, []);
+    ingredients.forEach(ingredient => {
+        const option = document.createElement("option");
+        option.value = ingredient;
+        option.textContent = ingredient;
+        ingredientFilter.appendChild(option);
+    });
+}
+
+// Call necessary functions on page load
+document.addEventListener("DOMContentLoaded", () => {
+    displayPizzaRecipes();
+    populateIngredientFilter();
+});
